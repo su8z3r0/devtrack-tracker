@@ -3,6 +3,7 @@ import { computed } from 'vue';
 import type { LearningModule, ModuleProgress, Locale, ContentTab } from '../types';
 import TheoryPanel from './TheoryPanel.vue';
 import PracticePanel from './PracticePanel.vue';
+import TerminalPanel from './TerminalPanel.vue';
 
 const props = defineProps<{
   module: LearningModule;
@@ -23,17 +24,21 @@ const t = computed(() => ({
     back: '← Torna ai moduli',
     tabTheory: `Teoria (${props.module.theoryLessons.length})`,
     tabPractice: `Pratica (${props.module.practicalActivities.length})`,
+    tabTerminal: `Terminale (${terminalActivitiesCount.value})`,
     progress: 'Progresso',
     noTheory: 'Nessuna lezione teorica disponibile',
-    noPractice: 'Nessuna attività pratica disponibile'
+    noPractice: 'Nessuna attività pratica disponibile',
+    noTerminal: 'Nessun terminale disponibile per questo modulo'
   },
   en: {
     back: '← Back to modules',
     tabTheory: `Theory (${props.module.theoryLessons.length})`,
     tabPractice: `Practice (${props.module.practicalActivities.length})`,
+    tabTerminal: `Terminal (${terminalActivitiesCount.value})`,
     progress: 'Progress',
     noTheory: 'No theory lessons available',
-    noPractice: 'No practical activities available'
+    noPractice: 'No practical activities available',
+    noTerminal: 'No terminal available for this module'
   }
 }[props.locale]));
 
@@ -56,6 +61,10 @@ const overallProgress = computed(() => {
   if (totalItems === 0) return 0;
   const completed = props.progress.completedLessons.length + props.progress.completedActivities.length;
   return Math.round((completed / totalItems) * 100);
+});
+
+const terminalActivitiesCount = computed(() => {
+  return props.module.practicalActivities.filter(a => a.terminalUrl).length;
 });
 
 function setTab(tab: ContentTab) {
@@ -154,6 +163,22 @@ function onActivityComplete(activityId: string, complete: boolean) {
             {{ practiceProgress }}%
           </span>
         </button>
+
+        <button
+          v-if="terminalActivitiesCount > 0"
+          @click="setTab('terminal')"
+          :class="[
+            'flex-1 px-6 py-4 font-medium text-sm border-b-2 transition-colors flex items-center justify-center gap-2',
+            activeTab === 'terminal'
+              ? 'border-blue-600 text-blue-600 bg-blue-50/50'
+              : 'border-transparent text-gray-600 hover:text-gray-900'
+          ]"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+          </svg>
+          {{ t.tabTerminal }}
+        </button>
       </div>
     </div>
 
@@ -190,6 +215,22 @@ function onActivityComplete(activityId: string, complete: boolean) {
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
           </svg>
           <p>{{ t.noPractice }}</p>
+        </div>
+      </div>
+
+      <!-- Terminal Tab -->
+      <div v-else-if="activeTab === 'terminal'">
+        <div v-if="terminalActivitiesCount > 0">
+          <div class="mb-4 text-sm text-gray-600">
+            {{ locale === 'it' ? 'Usa il terminale qui sotto per eseguire comandi in tempo reale.' : 'Use the terminal below to run commands in real time.' }}
+          </div>
+          <TerminalPanel url="ws://localhost:3001" />
+        </div>
+        <div v-else class="text-center py-12 text-gray-500">
+          <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+          </svg>
+          <p>{{ t.noTerminal }}</p>
         </div>
       </div>
     </div>

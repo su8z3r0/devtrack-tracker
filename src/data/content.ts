@@ -302,6 +302,7 @@ const dockerActivities: PracticalActivity[] = [
         'Add HEALTHCHECK in production Dockerfile'
       ]
     },
+    terminalUrl: 'ws://localhost:3001',
     estimatedMinutes: 45
   },
   {
@@ -357,6 +358,7 @@ const dockerActivities: PracticalActivity[] = [
         'Consider php:8.3-fpm-alpine as final base'
       ]
     },
+    terminalUrl: 'ws://localhost:3001',
     estimatedMinutes: 30
   }
 ];

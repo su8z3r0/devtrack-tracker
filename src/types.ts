@@ -23,6 +23,7 @@ export interface PracticalActivity {
   successCriteria: { it: string[]; en: string[] };
   hints: { it: string[]; en: string[] };
   estimatedMinutes: number;
+  terminalUrl?: string;
 }
 
 export interface LearningModule {
@@ -45,4 +46,4 @@ export interface ModuleProgress {
 }
 
 export type Locale = 'it' | 'en';
-export type ContentTab = 'theory' | 'practice';
+export type ContentTab = 'theory' | 'practice' | 'terminal';

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import type { PracticalActivity, Locale } from '../types';
+import TerminalLauncher from './TerminalLauncher.vue';
 
 const props = defineProps<{
   activities: PracticalActivity[];
@@ -222,6 +223,14 @@ function getDifficultyColor(minutes: number): string {
                 </li>
               </ul>
             </div>
+          </div>
+
+          <!-- Terminal launcher -->
+          <div v-if="activity.terminalUrl" class="pt-4 border-t border-gray-100">
+            <TerminalLauncher
+              :url="activity.terminalUrl"
+              :label="locale === 'it' ? 'Apri terminale per questa attività' : 'Open terminal for this activity'"
+            />
           </div>
 
           <!-- Action buttons -->
