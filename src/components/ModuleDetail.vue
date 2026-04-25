@@ -10,6 +10,7 @@ const props = defineProps<{
   progress: ModuleProgress;
   locale: Locale;
   activeTab: ContentTab;
+  dockerStatus: 'running' | 'stopped' | 'not_found' | 'error' | 'loading';
 }>();
 
 const emit = defineEmits<{
@@ -165,7 +166,7 @@ function onActivityComplete(activityId: string, complete: boolean) {
         </button>
 
         <button
-          v-if="terminalActivitiesCount > 0"
+          v-if="terminalActivitiesCount > 0 && dockerStatus === 'running'"
           @click="setTab('terminal')"
           :class="[
             'flex-1 px-6 py-4 font-medium text-sm border-b-2 transition-colors flex items-center justify-center gap-2',
@@ -220,7 +221,18 @@ function onActivityComplete(activityId: string, complete: boolean) {
 
       <!-- Terminal Tab -->
       <div v-else-if="activeTab === 'terminal'">
-        <div v-if="terminalActivitiesCount > 0">
+        <div v-if="dockerStatus !== 'running'" class="text-center py-12 text-gray-500">
+          <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          </svg>
+          <p class="text-lg font-medium text-gray-700 mb-2">
+            {{ locale === 'it' ? 'Ambiente sandbox non attivo' : 'Sandbox environment not active' }}
+          </p>
+          <p class="text-sm">
+            {{ locale === 'it' ? 'Avvia l\'ambiente Docker dall\'header per usare il terminale.' : 'Start the Docker environment from the header to use the terminal.' }}
+          </p>
+        </div>
+        <div v-else-if="terminalActivitiesCount > 0">
           <div class="mb-4 text-sm text-gray-600">
             {{ locale === 'it' ? 'Usa il terminale qui sotto per eseguire comandi in tempo reale.' : 'Use the terminal below to run commands in real time.' }}
           </div>

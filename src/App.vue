@@ -7,12 +7,14 @@ import ModuleCard from './components/ModuleCard.vue';
 import LanguageSwitcher from './components/LanguageSwitcher.vue';
 import ProgressStats from './components/ProgressStats.vue';
 import ModuleDetail from './components/ModuleDetail.vue';
+import DockerStatus from './components/DockerStatus.vue';
 
 const locale = ref<Locale>('it');
 const progress = ref<ModuleProgress[]>([]);
 const selectedCategory = ref<string | 'all'>('all');
 const selectedModule = ref<typeof modules[0] | null>(null);
 const activeTab = ref<ContentTab>('theory');
+const dockerStatus = ref<'running' | 'stopped' | 'not_found' | 'error' | 'loading'>('loading');
 
 onMounted(() => {
   progress.value = getInitialProgress();
@@ -112,7 +114,10 @@ const t = computed(() => translations[locale.value]);
             <p class="text-sm text-gray-600">{{ t.subtitle }}</p>
           </div>
 
-          <LanguageSwitcher v-model="locale" />
+          <div class="flex items-center gap-4">
+            <DockerStatus @status-change="dockerStatus = $event" />
+            <LanguageSwitcher v-model="locale" />
+          </div>
         </div>
       </div>
     </header>
@@ -136,6 +141,7 @@ const t = computed(() => translations[locale.value]);
           :progress="getModuleProgress(selectedModule.id)"
           :locale="locale"
           :activeTab="activeTab"
+          :dockerStatus="dockerStatus"
           @update-tab="activeTab = $event"
           @complete-lesson="handleLessonComplete(selectedModule.id, $event.lessonId, $event.complete)"
           @complete-activity="handleActivityComplete(selectedModule.id, $event.activityId, $event.complete)"
