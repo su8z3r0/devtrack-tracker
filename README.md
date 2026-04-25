@@ -76,6 +76,33 @@ interface ModuleProgress {
 18. Inglese Tecnico (Soft Skill)
 19. Revisione Progetti GitHub (Portfolio)
 
+## Terminale Interattivo
+
+Alcune attivita pratiche includono un terminale interattivo sandbox dove puoi eseguire comandi in tempo reale.
+
+### Avvio del backend terminale
+
+```bash
+# Avvia i servizi Docker (terminal sandbox + WebSocket bridge)
+cd ..
+docker-compose up --build -d terminal ws-server
+
+# Il WebSocket server e disponibile su ws://localhost:3001
+```
+
+### Funzionamento
+
+- **TerminalPanel.vue**: renderizza xterm.js nel browser, connesso via WebSocket
+- **ws-server.js**: bridge Node.js che inoltra input/output tra browser e `docker exec`
+- **terminal/Dockerfile**: container Ubuntu con PHP 8.3, Docker CLI, Git, Composer, Node.js
+
+### Sicurezza
+
+- Il container terminal gira senza privilegi (`--privileged` disabilitato)
+- Utente non-root (`devtrack`) all'interno del container
+- Nessun bind mount pericoloso; solo `/var/run/docker.sock` in read-only
+- Ogni sessione WebSocket avvia una nuova shell `docker exec`
+
 ## Note
 
 - Dati salvati solo localmente nel browser
