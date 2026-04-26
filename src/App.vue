@@ -115,6 +115,12 @@ const t = computed(() => translations[locale.value]);
           </div>
 
           <div class="flex items-center gap-4">
+            <a
+              href="/english-coach/"
+              class="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors"
+            >
+              English Coach
+            </a>
             <DockerStatus @status-change="dockerStatus = $event" />
             <LanguageSwitcher v-model="locale" />
           </div>
