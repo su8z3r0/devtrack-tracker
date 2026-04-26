@@ -116,7 +116,8 @@ const t = computed(() => translations[locale.value]);
 
           <div class="flex items-center gap-4">
             <a
-              href="/english-coach/"
+              href="http://localhost:8000/english-coach/"
+              target="_blank"
               class="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors"
             >
               English Coach
