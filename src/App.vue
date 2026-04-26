@@ -16,6 +16,11 @@ const selectedModule = ref<typeof modules[0] | null>(null);
 const activeTab = ref<ContentTab>('theory');
 const dockerStatus = ref<'running' | 'stopped' | 'not_found' | 'error' | 'loading'>('loading');
 
+// Link dinamico: dev = altra porta, produzione = nginx
+const englishCoachUrl = (typeof location !== 'undefined' && (location.port === '5173' || location.port === '5174'))
+  ? 'http://localhost:5175/'
+  : 'http://localhost:8000/english-coach/';
+
 onMounted(() => {
   progress.value = getInitialProgress();
 });
@@ -116,7 +121,7 @@ const t = computed(() => translations[locale.value]);
 
           <div class="flex items-center gap-4">
             <a
-              href="http://localhost:8000/english-coach/"
+              :href="englishCoachUrl"
               target="_blank"
               class="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors"
             >
